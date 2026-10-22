@@ -1,0 +1,20 @@
+{
+  "name": "neural-net-from-scratch-ts",
+  "version": "0.1.0",
+  "description": "A tiny neural network written from scratch in TypeScript, with no ML libraries, to understand how models learn.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Flávio Horbach",
+  "scripts": {
+    "xor": "tsx examples/xor.ts",
+    "circle": "tsx examples/circle.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}
