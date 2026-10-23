@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neural Net from Scratch</title>
+    <meta name="description" content="Watch a neural network written from scratch in TypeScript learn in your browser, side by side with TensorFlow.js, plus a webcam image classifier." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <header class="wrap hero">
+      <p class="eyebrow">Applied AI · Module 1</p>
+      <h1>Neural Net from Scratch</h1>
+      <p class="lede">
+        A neural network written in plain TypeScript, with no ML library, learning live in your browser.
+        Compare it with the same network in TensorFlow.js, then teach an image model with your webcam.
+      </p>
+      <p class="links">
+        <a href="https://github.com/Flaviohorbach/neural-net">Source code on GitHub</a>
+      </p>
+    </header>
+
+    <main class="wrap">
+      <section aria-labelledby="pg-title">
+        <h2 id="pg-title"><span class="step">1</span> Training playground</h2>
+        <p class="section-lede">
+          Each dot is a training example. The background is what the network currently believes:
+          the stronger the color, the more confident it is. Press <strong>Train</strong> and watch the boundary form.
+        </p>
+
+        <div class="playground">
+          <form class="controls" id="pg-controls">
+            <label>Dataset
+              <select id="pg-dataset">
+                <option value="circle">Circle</option>
+                <option value="quadrants">Quadrants (XOR)</option>
+                <option value="spiral">Spiral (hard)</option>
+              </select>
+            </label>
+            <label>Engine
+              <select id="pg-engine">
+                <option value="scratch">From scratch (this repo)</option>
+                <option value="tfjs">TensorFlow.js</option>
+              </select>
+            </label>
+            <label>Hidden layers
+              <select id="pg-hidden">
+                <option value="4">4</option>
+                <option value="8,8" selected>8 → 8</option>
+                <option value="16,16">16 → 16</option>
+                <option value="24,24,24">24 → 24 → 24</option>
+              </select>
+            </label>
+            <label>Activation
+              <select id="pg-activation">
+                <option value="tanh">tanh</option>
+                <option value="relu">ReLU</option>
+              </select>
+            </label>
+            <label>Learning rate
+              <select id="pg-lr">
+                <option value="0.03">0.03</option>
+                <option value="0.1">0.1</option>
+                <option value="0.3" selected>0.3</option>
+                <option value="1">1</option>
+                <option value="3">3 (too high)</option>
+              </select>
+            </label>
+            <div class="buttons">
+              <button type="submit" id="pg-play" class="primary">Train</button>
+              <button type="button" id="pg-reset">Reset</button>
+            </div>
+          </form>
+
+          <div class="stage">
+            <canvas id="pg-map" class="map" width="420" height="420" aria-label="Decision map and training points"></canvas>
+            <div class="legend">
+              <span><i class="dot c0"></i> class 0</span>
+              <span><i class="dot c1"></i> class 1</span>
+              <span><i class="dot ring"></i> validation (never trained on)</span>
+            </div>
+          </div>
+
+          <div class="metrics">
+            <dl class="stats">
+              <div><dt>Epoch</dt><dd id="pg-epoch">0</dd></div>
+              <div><dt>Train loss</dt><dd id="pg-train-loss">–</dd></div>
+              <div><dt>Validation loss</dt><dd id="pg-val-loss">–</dd></div>
+              <div><dt>Validation accuracy</dt><dd id="pg-val-acc">–</dd></div>
+            </dl>
+            <canvas id="pg-chart" class="chart" width="420" height="140" aria-label="Loss curve"></canvas>
+            <p class="chart-legend"><span class="line train"></span> train loss <span class="line val"></span> validation loss</p>
+            <p class="hint" id="pg-hint"></p>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="cam-title">
+        <h2 id="cam-title"><span class="step">2</span> Teach a model with your webcam</h2>
+        <p class="section-lede">
+          Training an image model from zero needs millions of photos. Instead, we reuse <strong>MobileNet</strong>,
+          already trained on 1.2 million images, to turn each camera frame into an <strong>embedding</strong>:
+          a list of 1,280 numbers that describes what is in the picture. A tiny network trained here, in seconds,
+          learns to tell your classes apart from those numbers. This is called <strong>transfer learning</strong>.
+        </p>
+
+        <div class="cam" id="cam">
+          <div class="cam-view">
+            <video id="cam-video" autoplay playsinline muted width="224" height="224"></video>
+            <p class="cam-status" id="cam-status">Camera is off. Nothing leaves your browser.</p>
+            <button type="button" class="primary" id="cam-start">Start camera</button>
+          </div>
+
+          <div class="cam-classes" id="cam-classes"></div>
+
+          <div class="cam-train">
+            <button type="button" id="cam-train" disabled>Train classifier</button>
+            <p class="hint" id="cam-train-status">Add at least 10 examples to two classes.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="wrap">
+      <p>Built by Flávio Horbach as part of an Applied AI Engineering learning path.</p>
+    </footer>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

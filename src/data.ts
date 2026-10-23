@@ -24,6 +24,38 @@ export function circle(count: number, rng = new Rng(), radius = 0.6, noise = 0):
 }
 
 /**
+ * Points in [-1, 1]² labeled 1 when x and y have opposite signs: XOR spread
+ * over a plane. Needs a hidden layer, like the 4-sample XOR.
+ */
+export function quadrants(count: number, rng = new Rng(), noise = 0): Sample[] {
+  return Array.from({ length: count }, () => {
+    const x = [rng.uniform(-1, 1), rng.uniform(-1, 1)];
+    let positive = x[0]! * x[1]! < 0;
+    if (rng.next() < noise) positive = !positive;
+    return { x, y: [positive ? 1 : 0] };
+  });
+}
+
+/**
+ * Two interleaved spiral arms, one per class. The hardest of the three:
+ * small networks fail here, which makes it a good test for layer sizes.
+ * `jitter` moves points randomly around their arm.
+ */
+export function spiral(count: number, rng = new Rng(), jitter = 0): Sample[] {
+  return Array.from({ length: count }, (_, i) => {
+    const label = i % 2;
+    const t = rng.uniform(0.05, 1);
+    const angle = t * 3 * Math.PI + label * Math.PI;
+    const radius = t * 0.9;
+    const x = [
+      radius * Math.cos(angle) + rng.normal() * jitter,
+      radius * Math.sin(angle) + rng.normal() * jitter,
+    ];
+    return { x, y: [label] };
+  });
+}
+
+/**
  * Splits the data so we can measure the model on samples it never trained on.
  * Good training accuracy with bad validation accuracy means overfitting.
  */
