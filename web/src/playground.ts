@@ -63,6 +63,9 @@ export function initPlayground() {
     };
     const name = select("pg-engine") as EngineName;
 
+    $("pg-engine-note").textContent = name === "tfjs"
+      ? "Slower here on purpose: for a network this small, moving data to the GPU costs more than the math. TensorFlow.js pays off with large models."
+      : "The network in src/network.ts: plain arrays and hand-written backpropagation.";
     hint.textContent = name === "tfjs" ? "Loading TensorFlow.js…" : "";
     const created = await createEngine(name, train, config, SEED);
     if (current !== generation) return created.dispose();
